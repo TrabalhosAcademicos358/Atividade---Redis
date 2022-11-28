@@ -1,9 +1,10 @@
-const pessoa = require("../database/models/pessoa")
+const Pessoa = require("../database/models/Pessoa")
 
 const postPessoa = async (req, res, next) => {
     const { email, nome } = req.body
+
     try {
-        const newUser = await pessoa.create(email, nome)
+        const newUser = await Pessoa.create({ email, nome })
         res.status(201).json(newUser)
     } catch (err) {
         console.error("Ocorreu um error ao salvar novo usuario:", err)
@@ -13,21 +14,22 @@ const postPessoa = async (req, res, next) => {
 
 const getPessoa = async (req, res, next) => {
     const id = req.params.id
-    try {
-        const newUser = pessoa.findOne({ where: { id } })
+    const newUser = await Pessoa.findOne({ where: { id } })
+
+    if (newUser) {
         res.json(newUser)
-    } catch (err) {
-        console.error("Ocorreu um error ao trazer os dados do usuario:", err)
-        res.status(404).send("Usuario não encontrado")
         next()
+    } else {
+        res.status(404).send("Usuario não encontrado")
     }
 }
 
 const putPessoa = async (req, res, next) => {
     const id = req.params.id
     const body = req.body
+
     try {
-        const newUser = pessoa.update(body, { where: { id } })
+        const newUser = await Pessoa.update(body, { where: { id } })
         res.status(204).json(newUser)
         next()
     } catch (err) {
@@ -38,9 +40,10 @@ const putPessoa = async (req, res, next) => {
 
 const delPessoa = async (req, res, next) => {
     const id = req.params.id
+    
     try {
-        await pessoa.destroy({ where: { id } });
-        res.status(204).json(newUser)
+        await Pessoa.destroy({ where: { id } });
+        res.status(204)
         next()
     } catch (err) {
         console.error("Ocorreu um error ao deletar usuario:", err)

@@ -1,8 +1,9 @@
+const Pessoa = require("../database/models/Pessoa")
 const client = require('../database/redis')
 
 const setPessoa = async (req, res, next) => {
-    const objUser = req.body
-    const id = String(objUser.id)
+    const id = req.params.id
+    const objUser = await Pessoa.findOne({ where: { id } })
     
     await client.set(id, JSON.stringify(objUser), {
         EX: 3600
@@ -13,10 +14,10 @@ const getPessoa = async (req, res, next) => {
     const id = req.params.id
     const objUser = await client.get(id)
 
-    if (objUser) {
-        res.json(JSON.parse(objUser))
+    if (objUser === null) {
+        next()
     } else {
-        res.status(404).send("Usuario não existente")
+        res.json(JSON.parse(objUser))
     }
 }
 
