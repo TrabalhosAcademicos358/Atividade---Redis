@@ -3,8 +3,9 @@ const router = express.Router()
 
 const redisController = require("./controller/pessoaRedis")
 
-router.get("/", (req, res, next) => res.send("oi"))
+router.post("/pessoa", redisController.setPessoa)
 router.get("/pessoa/:id", redisController.getPessoa)
-// router.set("pessoa", )
+router.put("/pessoa/:id", redisController.putPessoa)
+router.delete("/pessoa/:id", redisController.deletePessoa)
 
 module.exports = router
