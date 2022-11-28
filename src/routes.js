@@ -1,11 +1,15 @@
 const express = require('express')
 const router = express.Router()
 
-const redisController = require("./controller/pessoaRedis")
+const postgresControl = require("./controller/pessoaPostgress")
+const redisControl = require("./controller/pessoaRedis")
 
-router.post("/pessoa", redisController.setPessoa)
-router.get("/pessoa/:id", redisController.getPessoa)
-router.put("/pessoa/:id", redisController.putPessoa)
-router.delete("/pessoa/:id", redisController.deletePessoa)
+router.post("/pessoa", postgresControl.postPessoa)
+
+router.get("/pessoa/:id", redisControl.getPessoa, postgresControl.getPessoa)
+
+router.put("/pessoa/:id", postgresControl.putPessoa, redisControl.setPessoa)
+
+router.delete("/pessoa/:id", postgresControl.delPessoa, redisControl.delPessoa)
 
 module.exports = router
